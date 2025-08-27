@@ -35,18 +35,19 @@ class user_profiles extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
-        'cigarros_por_dia_inicial',
-        'tempo_fumando_anos',
-        'pratica_atividade_fisica',
-        'frequencia_semanal_exercicio',
-        'tempo_exercicio_minutos',
-        'hobbies',
-        'objetivo_reducao',
-        'meta_cigarros_dia',
-        'contato_emergencia_nome',
-        'contato_emergencia_telefone',
-        'pontuacao_total',
+    'user_id',
+    'cigarros_por_dia_inicial',
+    'tempo_fumando_anos',
+    'pratica_atividade_fisica',
+    'frequencia_semanal_exercicio',
+    'tempo_exercicio_minutos',
+    'hobbies',
+    'objetivo_reducao',
+    'meta_cigarros_dia',
+    'contato_emergencia_nome',
+    'contato_emergencia_telefone',
+    'onboarding_concluido',
+    'pontuacao_total'
     ];
 
     /**
@@ -57,11 +58,11 @@ class user_profiles extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'pratica_atividade_fisica' => 'boolean',
-        // Adicione outros casts conforme necessário (ex: 'data_criacao' => 'datetime')
-        // No entanto, created_at e updated_at já são automaticamente tratados.
+    'hobbies' => 'array',
+    'pratica_atividade_fisica' => 'boolean',
+    'onboarding_concluido' => 'boolean'
     ];
-
+    
     /**
      * Define o relacionamento: Um UserProfile pertence a um User.
      * O Laravel assume que a chave estrangeira na tabela 'user_profiles' é 'user_id'
@@ -73,5 +74,5 @@ class user_profiles extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
 }
