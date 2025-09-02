@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->id();
 
-            // Chave estrangeira 
+            // Chave estrangeira
             $table->unsignedBigInteger('user_id')->unique();
 
             // Campos do onboarding (RF05)
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->string('contato_emergencia_nome', 255)->nullable();
             $table->string('contato_emergencia_telefone', 50)->nullable();
 
-            // Campo para controle do onboarding (RF04)
+            // Campo para controle do onboarding / middlewere (RF04)
             $table->boolean('onboarding_concluido')->default(false);
 
             // Sistema de pontuação
