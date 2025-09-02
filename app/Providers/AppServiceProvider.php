@@ -19,6 +19,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Registrar middleware manualmente - SOLUÇÃO ALTERNATIVA APOS TENTAR COM O Kernel.php MAS NAO FUNCIONOU
+        app('router')->aliasMiddleware('onboarding', \App\Http\Middleware\CheckOnboarding::class);
+        
     }
 }
