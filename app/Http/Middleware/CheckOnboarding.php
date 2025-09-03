@@ -17,20 +17,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CheckOnboarding
 {
-    public function handle(Request $request, Closure $next): Response
+     public function handle(Request $request, Closure $next): Response
     {
         // 1. Verificar se o usuário está logado
         if (Auth::check()) {
-            $user = Auth::user(); // Armazena o usuário autenticado na variavel $user
+            $user = Auth::user();
 
             // 2. Verificar se tem perfil E se onboarding NÃO foi concluído
-            if (!$user->profile || !$user->profile->onboarding_concluido) {
+            $hasCompletedOnboarding = $user->profile && $user->profile->onboarding_concluido;
 
+            if (!$hasCompletedOnboarding) {
                 // 3. Permitir acesso APENAS às rotas de onboarding e logout
                 if (!$request->is('onboarding*') && !$request->is('logout')) {
-
                     // 4. Redirecionar para onboarding se tentar acessar outras rotas
-                    return redirect()->route('onboarding.show');
+                    return redirect()->route('onboarding.create'); // ← CORRIGIDO
                 }
             }
         }

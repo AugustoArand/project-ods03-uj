@@ -3,14 +3,17 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Middleware\CheckOnboarding;
 
 Route::get('/', function () {
     return view('home');
 });
 
+
+
 // Rotas de ONBOARDING (acessíveis com login mas sem onboarding completo)
 Route::middleware(['auth'])->group(function () {
-    Route::get('/onboarding', [OnboardingController::class, 'show'])->name('onboarding.show');
+    Route::get('/onboarding', [OnboardingController::class, 'create'])->name('onboarding.create');
     Route::post('/onboarding', [OnboardingController::class, 'store'])->name('onboarding.store');
 });
 

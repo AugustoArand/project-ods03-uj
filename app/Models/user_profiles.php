@@ -46,9 +46,10 @@ class user_profiles extends Model
     'meta_cigarros_dia',
     'contato_emergencia_nome',
     'contato_emergencia_telefone',
+    'fagerstrom_score', // Novo campo para pontuação do teste de Fagerström
     'onboarding_concluido',
     'pontuacao_total'
-    ];
+];
 
     /**
      * Define os atributos que devem ser convertidos para tipos de dados nativos do PHP.
@@ -62,7 +63,7 @@ class user_profiles extends Model
     'pratica_atividade_fisica' => 'boolean',
     'onboarding_concluido' => 'boolean'
     ];
-    
+
     /**
      * Define o relacionamento: Um UserProfile pertence a um User.
      * O Laravel assume que a chave estrangeira na tabela 'user_profiles' é 'user_id'

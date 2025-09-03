@@ -30,6 +30,7 @@ return new class extends Migration
             $table->boolean('onboarding_concluido')->default(false);
 
             // Sistema de pontuação
+            $table->integer('fagerstrom_score')->nullable();
             $table->integer('pontuacao_total')->default(0);
 
             $table->timestamps();
