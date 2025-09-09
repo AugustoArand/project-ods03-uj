@@ -27,9 +27,12 @@
                 </header>
             @endisset
 
+        
+
             <!-- Page Content -->
             <main>
-                {{ $slot }}
+                {{ $slot ?? '' }}
+                @yield('content')  <!-- Adicionado para suportar seções -->
             </main>
         </div>
     </body>

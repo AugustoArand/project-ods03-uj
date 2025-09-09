@@ -35,19 +35,21 @@ class user_profiles extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'user_id',
-        'cigarros_por_dia_inicial',
-        'tempo_fumando_anos',
-        'pratica_atividade_fisica',
-        'frequencia_semanal_exercicio',
-        'tempo_exercicio_minutos',
-        'hobbies',
-        'objetivo_reducao',
-        'meta_cigarros_dia',
-        'contato_emergencia_nome',
-        'contato_emergencia_telefone',
-        'pontuacao_total',
-    ];
+    'user_id',
+    'cigarros_por_dia_inicial',
+    'tempo_fumando_anos',
+    'pratica_atividade_fisica',
+    'frequencia_semanal_exercicio',
+    'tempo_exercicio_minutos',
+    'hobbies',
+    'objetivo_reducao',
+    'meta_cigarros_dia',
+    'contato_emergencia_nome',
+    'contato_emergencia_telefone',
+    'fagerstrom_score', // Novo campo para pontuação do teste de Fagerström
+    'onboarding_concluido',
+    'pontuacao_total'
+];
 
     /**
      * Define os atributos que devem ser convertidos para tipos de dados nativos do PHP.
@@ -57,9 +59,9 @@ class user_profiles extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'pratica_atividade_fisica' => 'boolean',
-        // Adicione outros casts conforme necessário (ex: 'data_criacao' => 'datetime')
-        // No entanto, created_at e updated_at já são automaticamente tratados.
+    'hobbies' => 'array',
+    'pratica_atividade_fisica' => 'boolean',
+    'onboarding_concluido' => 'boolean'
     ];
 
     /**
@@ -73,5 +75,5 @@ class user_profiles extends Model
     {
         return $this->belongsTo(User::class);
     }
-    
+
 }
