@@ -1,7 +1,4 @@
-<!-- resources/views/auth/onboarding.blade.php -->
-@extends('layouts.app')
 
-@section('content')
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -30,7 +27,21 @@
                     <div id="progressBar" class="bg-[#1081C7] h-2 rounded-full" style="width: 16.66%"></div>
                 </div>
             </div>
-
+            
+            <div class="bg-white rounded-xl shadow-md p-6 border border-[#1081C7]">
+            {{-- BLOCO PARA EXIBIR ERROS --}}
+            @if ($errors->any())
+                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                    <strong class="font-bold">Opa!</strong>
+                    <span class="block sm:inline">Algo deu errado.</span>
+                    <ul class="mt-2 list-disc list-inside">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            
             <form id="profileForm" method="POST" action="{{ route('onboarding.store') }}">
                 @csrf
 
@@ -135,140 +146,170 @@
     </div>
 
     <script>
-        const fagerstromQuestions = [
-            {
-                question: "Quanto tempo depois de acordar você fuma o primeiro cigarro?",
-                options: [
-                    { value: 3, text: "Nos primeiros 5 minutos" },
-                    { value: 2, text: "Entre 6-30 minutos" },
-                    { value: 1, text: "Entre 31-60 minutos" },
-                    { value: 0, text: "Após 60 minutos" }
-                ]
-            },
-            {
-                question: "Você acha difícil não fumar em lugares onde é proibido?",
-                options: [
-                    { value: 1, text: "Sim" },
-                    { value: 0, text: "Não" }
-                ]
-            },
-            {
-                question: "Qual cigarro do dia traz mais satisfação?",
-                options: [
-                    { value: 1, text: "O primeiro da manhã" },
-                    { value: 0, text: "Qualquer outro" }
-                ]
-            },
-            {
-                question: "Quantos cigarros você fuma por dia?",
-                options: [
-                    { value: 0, text: "10 ou menos" },
-                    { value: 1, text: "11-20" },
-                    { value: 2, text: "21-30" },
-                    { value: 3, text: "31 ou mais" }
-                ]
-            },
-            {
-                question: "Você fuma mais frequentemente durante as primeiras horas após acordar?",
-                options: [
-                    { value: 1, text: "Sim" },
-                    { value: 0, text: "Não" }
-                ]
-            },
-            {
-                question: "Você fuma mesmo doente, quando precisa ficar de cama na maior parte do dia?",
-                options: [
-                    { value: 1, text: "Sim" },
-                    { value: 0, text: "Não" }
-                ]
-            }
-        ];
+    const fagerstromQuestions = [
+        // ... (seu array de perguntas permanece o mesmo, sem alterações aqui) ...
+        {
+            question: "Quanto tempo depois de acordar você fuma o primeiro cigarro?",
+            options: [
+                { value: 3, text: "Nos primeiros 5 minutos" },
+                { value: 2, text: "Entre 6-30 minutos" },
+                { value: 1, text: "Entre 31-60 minutos" },
+                { value: 0, text: "Após 60 minutos" }
+            ]
+        },
+        {
+            question: "Você acha difícil não fumar em lugares onde é proibido?",
+            options: [
+                { value: 1, text: "Sim" },
+                { value: 0, text: "Não" }
+            ]
+        },
+        {
+            question: "Qual cigarro do dia traz mais satisfação?",
+            options: [
+                { value: 1, text: "O primeiro da manhã" },
+                { value: 0, text: "Qualquer outro" }
+            ]
+        },
+        {
+            question: "Quantos cigarros você fuma por dia?",
+            options: [
+                { value: 0, text: "10 ou menos" },
+                { value: 1, text: "11-20" },
+                { value: 2, text: "21-30" },
+                { value: 3, text: "31 ou mais" }
+            ]
+        },
+        {
+            question: "Você fuma mais frequentemente durante as primeiras horas após acordar?",
+            options: [
+                { value: 1, text: "Sim" },
+                { value: 0, text: "Não" }
+            ]
+        },
+        {
+            question: "Você fuma mesmo doente, quando precisa ficar de cama na maior parte do dia?",
+            options: [
+                { value: 1, text: "Sim" },
+                { value: 0, text: "Não" }
+            ]
+        }
+    ];
 
-        let currentStep = 0;
-        const totalSteps = 1 + fagerstromQuestions.length; // Info básica + questões
+    let currentStep = 0;
+    const totalSteps = 1 + fagerstromQuestions.length;
 
-        function nextQuestion() {
-            if (currentStep === 0) {
-                // Saindo das informações básicas
-                document.getElementById('basicInfo').classList.add('hidden');
-                document.getElementById('fagerstromTest').classList.remove('hidden');
-                currentStep = 1;
-                showQuestion(0);
-            } else if (currentStep <= fagerstromQuestions.length) {
-                // Avançando nas questões
-                const questionIndex = currentStep - 1;
-                if (questionIndex < fagerstromQuestions.length - 1) {
-                    showQuestion(questionIndex + 1);
-                    currentStep++;
-                } else {
-                    // Última questão
-                    document.getElementById('fagerstromTest').classList.add('hidden');
-                    document.getElementById('submitButton').classList.remove('hidden');
-                    currentStep++;
-                }
+    // --- NOVA ALTERAÇÃO 1: Objeto para armazenar as respostas ---
+    let fagerstromAnswers = {};
+
+    function nextQuestion() {
+        // --- NOVA ALTERAÇÃO 2: Salvar a resposta da etapa atual antes de avançar ---
+        if (currentStep > 0 && currentStep <= fagerstromQuestions.length) {
+            const questionIndex = currentStep - 1;
+            const questionName = `fagerstrom_q${questionIndex + 1}`;
+            const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+
+            if (!selectedOption) {
+                alert('Por favor, selecione uma resposta para continuar.');
+                return; // Impede de avançar sem responder
             }
-            updateProgress();
+            fagerstromAnswers[questionName] = selectedOption.value;
         }
 
-        function prevQuestion() {
-            if (currentStep === 1) {
-                // Voltando para informações básicas
-                document.getElementById('fagerstromTest').classList.add('hidden');
-                document.getElementById('basicInfo').classList.remove('hidden');
-                document.getElementById('submitButton').classList.add('hidden');
-                currentStep = 0;
-            } else if (currentStep > 1 && currentStep <= fagerstromQuestions.length + 1) {
-                // Voltando nas questões
-                document.getElementById('fagerstromTest').classList.remove('hidden');
-                document.getElementById('submitButton').classList.add('hidden');
-                const questionIndex = currentStep - 2;
-                showQuestion(questionIndex);
-                currentStep--;
-            }
-            updateProgress();
-        }
-
-        function showQuestion(index) {
-            const question = fagerstromQuestions[index];
-            document.getElementById('questionText').textContent = question.question;
-
-            const optionsContainer = document.getElementById('optionsContainer');
-            optionsContainer.innerHTML = '';
-
-            question.options.forEach(option => {
-                const optionId = `q${index}_opt${option.value}`;
-                optionsContainer.innerHTML += `
-                    <div class="flex items-center">
-                        <input
-                            type="radio"
-                            id="${optionId}"
-                            name="fagerstrom_q${index + 1}"
-                            value="${option.value}"
-                            required
-                            class="h-4 w-4 text-[#1081C7] focus:ring-[#1081C7] border-[#1081C7] rounded"
-                        >
-                        <label for="${optionId}" class="ml-2 block text-sm text-[#094F8B]">${option.text}</label>
-                    </div>
-                `;
-            });
-
-            document.getElementById('currentQuestion').textContent = index + 1;
-
-            // Atualizar texto do botão para última pergunta
-            if (index === fagerstromQuestions.length - 1) {
-                document.getElementById('nextButton').textContent = 'Finalizar';
+        // A lógica de navegação continua a mesma
+        if (currentStep === 0) {
+            document.getElementById('basicInfo').classList.add('hidden');
+            document.getElementById('fagerstromTest').classList.remove('hidden');
+            currentStep = 1;
+            showQuestion(0);
+        } else if (currentStep <= fagerstromQuestions.length) {
+            const questionIndex = currentStep - 1;
+            if (questionIndex < fagerstromQuestions.length - 1) {
+                showQuestion(questionIndex + 1);
+                currentStep++;
             } else {
-                document.getElementById('nextButton').textContent = 'Próxima';
+                document.getElementById('fagerstromTest').classList.add('hidden');
+                document.getElementById('submitButton').classList.remove('hidden');
+                currentStep++;
             }
         }
+        updateProgress();
+    }
 
-        function updateProgress() {
-            const progress = (currentStep / totalSteps) * 100;
-            document.getElementById('progressBar').style.width = `${progress}%`;
+    function prevQuestion() {
+        // A lógica de voltar continua a mesma
+        if (currentStep === 1) {
+            document.getElementById('fagerstromTest').classList.add('hidden');
+            document.getElementById('basicInfo').classList.remove('hidden');
+            document.getElementById('submitButton').classList.add('hidden');
+            currentStep = 0;
+        } else if (currentStep > 1 && currentStep <= fagerstromQuestions.length + 1) {
+            document.getElementById('fagerstromTest').classList.remove('hidden');
+            document.getElementById('submitButton').classList.add('hidden');
+            const questionIndex = currentStep - 2;
+            showQuestion(questionIndex);
+            currentStep--;
         }
+        updateProgress();
+    }
 
-       
-    </script>
+    function showQuestion(index) {
+        // ... (A função showQuestion permanece a mesma, sem alterações) ...
+        const question = fagerstromQuestions[index];
+        document.getElementById('questionText').textContent = question.question;
+
+        const optionsContainer = document.getElementById('optionsContainer');
+        optionsContainer.innerHTML = '';
+
+        question.options.forEach(option => {
+            const optionId = `q${index}_opt${option.value}`;
+            // Verifica se já existe uma resposta para esta pergunta para pré-selecionar
+            const isChecked = fagerstromAnswers[`fagerstrom_q${index + 1}`] == option.value ? 'checked' : '';
+            optionsContainer.innerHTML += `
+                <div class="flex items-center">
+                    <input
+                        type="radio"
+                        id="${optionId}"
+                        name="fagerstrom_q${index + 1}"
+                        value="${option.value}"
+                        required
+                        ${isChecked}
+                        class="h-4 w-4 text-[#1081C7] focus:ring-[#1081C7] border-[#1081C7] rounded"
+                    >
+                    <label for="${optionId}" class="ml-2 block text-sm text-[#094F8B]">${option.text}</label>
+                </div>
+            `;
+        });
+        document.getElementById('currentQuestion').textContent = index + 1;
+
+        if (index === fagerstromQuestions.length - 1) {
+            document.getElementById('nextButton').textContent = 'Finalizar';
+        } else {
+            document.getElementById('nextButton').textContent = 'Próxima';
+        }
+    }
+
+    function updateProgress() {
+        // ... (A função updateProgress permanece a mesma) ...
+        const progress = (currentStep / totalSteps) * 100;
+        document.getElementById('progressBar').style.width = `${progress}%`;
+    }
+    
+    // --- NOVA ALTERAÇÃO 3: Adicionar as respostas salvas ao formulário no momento do envio ---
+    document.getElementById('profileForm').addEventListener('submit', function(event) {
+        // Limpa quaisquer inputs ocultos antigos para evitar duplicação
+        this.querySelectorAll('input[type="hidden"][name^="fagerstrom_q"]').forEach(el => el.remove());
+
+        // Cria e anexa um input oculto para cada resposta guardada
+        for (const name in fagerstromAnswers) {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = name;
+            hiddenInput.value = fagerstromAnswers[name];
+            this.appendChild(hiddenInput);
+        }
+    });
+
+</script>
 </body>
 </html>
-@endsection

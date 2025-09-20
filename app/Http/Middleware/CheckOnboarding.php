@@ -30,7 +30,7 @@ class CheckOnboarding
                 // 3. Permitir acesso APENAS às rotas de onboarding e logout
                 if (!$request->is('onboarding*') && !$request->is('logout')) {
                     // 4. Redirecionar para onboarding se tentar acessar outras rotas
-                    return redirect()->route('onboarding.create'); // ← CORRIGIDO
+                    return redirect()->route('onboarding.create');
                 }
             }
         }
@@ -38,4 +38,5 @@ class CheckOnboarding
         // 5. Se tudo ok, deixar a requisição passar para o controller
         return $next($request);
     }
-}
+} 
+
