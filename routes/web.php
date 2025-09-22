@@ -26,9 +26,8 @@ Route::middleware(['auth', 'verified', 'onboarding'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
     // Adicione aqui TODAS as outras rotas protegidas do sistema
 });
 
-// Rotas de autenticação (importadas do auth.php)
+
 require __DIR__.'/auth.php';
