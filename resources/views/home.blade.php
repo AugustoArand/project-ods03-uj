@@ -78,7 +78,7 @@
             <p class="text-xl text-[#1081C7] max-w-3xl mx-auto mb-10">
                 Plataforma interativa baseada em evidências científicas para ajudar você a parar de fumar. Monitoramento personalizado, apoio da comunidade e ferramentas motivacionais.
             </p>
-            <a href="#" class="inline-block bg-[#1081C7] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#0c6093] transition text-lg">
+            <a href="/login" class="inline-block bg-[#1081C7] text-white px-8 py-3 rounded-lg font-medium hover:bg-[#0c6093] transition text-lg">
                 Comece Agora
             </a>
         </div>

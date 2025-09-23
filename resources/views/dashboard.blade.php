@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-color: #f0f7ff; 
+            background-color: #f0f7ff;
         }
         .active-tab {
             background-color: white;
@@ -25,8 +25,45 @@
         .tab-button:hover {
             background-color: #e5e7eb;
         }
+
     </style>
 </head>
+   <script>
+    // Garante que o script rode depois que a página carregar completamente
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // Pega o elemento container e a data de início que passamos pelo Laravel
+        const timerContainer = document.getElementById('timer-container');
+        const startDate = new Date(timerContainer.dataset.startDate);
+
+        // Função que atualiza o cronômetro
+        function updateTimer() {
+            // Pega o tempo atual
+            const now = new Date();
+
+            // Calcula a diferença total em milissegundos
+            const difference = now - startDate;
+
+            // Converte a diferença para dias, horas, minutos e segundos
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            // Atualiza os valores no frontend
+            document.getElementById('days').innerText = days;
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
+
+        // Roda a função updateTimer
+        setInterval(updateTimer, 1000);
+
+        updateTimer();
+    });
+    </script>
+
 <body class="font-sans">
 
 <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
@@ -85,35 +122,98 @@
         </div>
 
         <div>
+            @php
+                // --- Lógica para a Meta de Tempo ---
+                // Pega a meta em dias do perfil do usuário. Se não houver, define 365 (1 ano) como padrão.
+                $goal_days = (int) (Auth::user()->profile->objetivo_reducao ?? 365);
+                if ($goal_days <= 0) {
+                    $goal_days = 365; // Padrão para evitar erros de divisão por zero.
+                }
+
+                // Cria uma descrição amigável para a meta
+                $goal_description = match ($goal_days) {
+                    7 => '1 semana livre',
+                    30 => '1 mês livre',
+                    90 => '3 meses livre',
+                    180 => '6 meses livre',
+                    365 => '1 ano livre',
+                    default => $goal_days . ' dias livre',
+                };
+
+                // Calcula os dias que o usuário já completou e a porcentagem do progresso
+                $days_sober = Auth::user()->created_at->diffInDays();
+                $progress_percentage = min(100, ($days_sober / $goal_days) * 100);
+
+                // --- Lógica para Estatísticas ---
+                // Pega os dados do perfil do usuário, se existirem.
+                $user_profile = Auth::user()->profile;
+
+                // Define constantes para os cálculos
+                const PRECO_POR_CIGARRO = 0.50; // Ex: R$ 10,00 por maço de 20
+                const MINUTOS_POR_CIGARRO = 5;  // Estimativa de tempo de vida por cigarro
+
+                // Pega a quantidade de cigarros que o usuário fumava por dia. Usa 0 se não houver perfil.
+                $cigarros_por_dia = $user_profile->cigarros_por_dia_inicial ?? 0;
+
+                // Calcula o total de cigarros evitados
+                $cigarros_evitados = $cigarros_por_dia * $days_sober;
+
+                // Calcula a economia financeira
+                $economia_financeira = $cigarros_evitados * PRECO_POR_CIGARRO;
+
+                // Calcula o tempo de vida recuperado
+                $minutos_recuperados = $cigarros_evitados * MINUTOS_POR_CIGARRO;
+                $horas_recuperadas = floor($minutos_recuperados / 60);
+                $minutos_restantes = $minutos_recuperados % 60;
+                $tempo_recuperado_str = $horas_recuperadas . 'h ' . $minutos_restantes . 'min';
+            @endphp
             <div id="tab-profile" class="tab-content space-y-6">
                 <div class="bg-blue-100/60 p-6 rounded-xl shadow-md flex items-center space-x-6">
-                    <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-4xl flex-shrink-0">R</div>
+                    <div class="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-4xl flex-shrink-0">{{ substr(Auth::user()->name, 0, 1) }}</div>
                     <div>
-                        <h2 class="text-2xl font-bold text-gray-800">Ryan França</h2>
-                        <p class="text-blue-800"><span class="font-bold text-5xl">559</span> Dias consecutivos</p>
-                        <div class="mt-2">
-                            <span class="text-sm font-medium text-gray-600">Meta: 1 ano livre</span>
+                        <h2 class="text-2xl font-bold text-gray-800">{{ Auth::user()->name }}</h2>
+                       <div id="timer-container" data-start-date="{{ Auth::user()->created_at->toIso8601String() }}" class="flex items-center gap-2 mt-2">
+                            <div class="text-center bg-white/60 border border-blue-800/20 rounded-lg py-2 px-3 min-w-[60px]">
+                                <span id="days" class="block text-3xl font-bold text-[#094F8B] leading-none">0</span>
+                                <span class="block text-xs uppercase tracking-wider text-[#1081C7]">dias</span>
+                            </div>
+
+                            <div class="text-center bg-white/60 border border-blue-800/20 rounded-lg py-2 px-3 min-w-[60px]">
+                                <span id="hours" class="block text-3xl font-bold text-[#094F8B] leading-none">0</span>
+                                <span class="block text-xs uppercase tracking-wider text-[#1081C7]">horas</span>
+                            </div>
+
+                            <div class="text-center bg-white/60 border border-blue-800/20 rounded-lg py-2 px-3 min-w-[60px]">
+                                <span id="minutes" class="block text-3xl font-bold text-[#094F8B] leading-none">0</span>
+                                <span class="block text-xs uppercase tracking-wider text-[#1081C7]">minutos</span>
+                            </div>
+
+                            <div class="text-center bg-white/60 border border-blue-800/20 rounded-lg py-2 px-3 min-w-[60px]">
+                                <span id="seconds" class="block text-3xl font-bold text-[#094F8B] leading-none">0</span>
+                                <span class="block text-xs uppercase tracking-wider text-[#1081C7]">segundos</span>
+                            </div>
+                        </div>
+                            <span class="text-sm font-medium text-gray-600">Meta: {{ $goal_description }}</span>
                             <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
-                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 23%"></div>
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: {{ round($progress_percentage, 2) }}%"></div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <h3 class="font-semibold text-gray-600">Economia Financeira</h3>
-                        <p class="text-4xl font-bold text-green-600 mt-2">R$ 12005</p>
+                        <p class="text-4xl font-bold text-green-600 mt-2">R$ {{ number_format($economia_financeira, 2, ',', '.') }}</p>
                         <p class="text-sm text-gray-500">Economizados desde que parou</p>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <h3 class="font-semibold text-gray-600">Tempo Recuperado</h3>
-                        <p class="text-4xl font-bold text-blue-600 mt-2">124h 21min</p>
+                        <p class="text-4xl font-bold text-blue-600 mt-2">{{ $tempo_recuperado_str }}</p>
                         <p class="text-sm text-gray-500">De vida recuperada</p>
                     </div>
                     <div class="bg-white p-6 rounded-xl shadow-md">
                         <h3 class="font-semibold text-gray-600">Cigarros Evitados</h3>
-                        <p class="text-4xl font-bold text-purple-600 mt-2">23123</p>
+                        <p class="text-4xl font-bold text-purple-600 mt-2">{{ number_format($cigarros_evitados, 0, ',', '.') }}</p>
                         <p class="text-sm text-gray-500">Cigarros não fumados</p>
                     </div>
                 </div>
@@ -249,7 +349,7 @@
                     tabButtons.forEach(btn => btn.classList.remove('active-tab'));
                     tabContents.forEach(content => content.classList.add('hidden'));
 
-                    
+
                     button.classList.add('active-tab');
 
                     const tabId = button.getAttribute('data-tab');
