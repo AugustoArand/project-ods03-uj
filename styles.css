@@ -1,0 +1,67 @@
+/* Additional custom styles for the ODS03 project */
+
+/* Smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Hover effects for links */
+.hover-lift:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* ODS03 specific colors */
+.ods03-primary {
+    color: #F53003;
+}
+
+.ods03-bg-primary {
+    background-color: #F53003;
+}
+
+/* Health icon styling */
+.health-icon {
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+}
+
+/* Gradient backgrounds */
+.gradient-health {
+    background: linear-gradient(135deg, #F53003 0%, #FF6B47 100%);
+}
+
+/* Custom focus styles for accessibility */
+.focus-visible:focus-visible {
+    outline: 2px solid #F53003;
+    outline-offset: 2px;
+}
+
+/* Loading animation */
+@keyframes pulse-health {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.pulse-health {
+    animation: pulse-health 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
