@@ -71,16 +71,31 @@ Este erro geralmente ocorre quando:
 
 ## 📁 Arquivos de Workflow Disponíveis
 
-- `pages.yml` - Workflow padrão com build e deploy separados
-- `static.yml` - Workflow simplificado (recomendado se houver problemas)
+Criamos múltiplos workflows para garantir que um funcione:
+
+- **`simple.yml`** - Workflow mais simples (RECOMENDADO)
+- **`alternative.yml`** - Sem usar configure-pages
+- **`pages.yml`** - Workflow padrão com enablement=true
+- **`static.yml`** - Workflow estático com enablement=true
 
 ## 🔄 Comandos Git para Atualizar
 
 ```bash
 git add .
-git commit -m "Fix GitHub Pages configuration"
+git commit -m "Add multiple workflow options for GitHub Pages"
 git push origin main
 ```
+
+## 🚀 Testando os Workflows
+
+1. Após fazer push, vá para **Actions** no GitHub
+2. Você verá múltiplos workflows
+3. Execute manualmente o **"Simple GitHub Pages Deploy"** primeiro
+4. Se não funcionar, tente o **"Deploy to GitHub Pages (Alternative)"**
+
+## ⚠️ Limpeza (Opcional)
+
+Após encontrar o workflow que funciona, você pode deletar os outros arquivos .yml que não foram usados.
 
 ## 🌐 Acessando o Site
 
