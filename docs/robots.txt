@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://augustoarand.github.io/project-ods03-uj/sitemap.xml
