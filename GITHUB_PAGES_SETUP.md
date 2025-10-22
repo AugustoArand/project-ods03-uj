@@ -1,11 +1,31 @@
-# 🚀 Configuração do GitHub Pages
+# 🚀 Configuração do GitHub Pages - GUIA COMPLETO
 
-Este guia explica como configurar o GitHub Pages para hospedar a página estática do projeto ODS03.
+## ⚠️ PASSO OBRIGATÓRIO: Habilitar GitHub Pages Manualmente
+
+**ANTES de executar qualquer workflow, você DEVE habilitar o GitHub Pages:**
+
+### 1. Habilite o GitHub Pages
+1. Vá para: https://github.com/AugustoArand/project-ods03-uj/settings/pages
+2. Em **Source**, selecione **"Deploy from a branch"**
+3. Em **Branch**, selecione **"main"**
+4. Em **Folder**, selecione **"/ docs"**
+5. Clique em **"Save"**
+
+### 2. Configure Permissões
+1. Vá para: https://github.com/AugustoArand/project-ods03-uj/settings/actions
+2. Em **Workflow permissions**, selecione:
+   - ✅ **"Read and write permissions"**
+3. Clique em **"Save"**
+
+## 🔄 DEPOIS Execute os Workflows
+
+Após habilitar o Pages manualmente, agora os workflows podem funcionar.
 
 ## 📋 Pré-requisitos
 
-- Repositório GitHub criado
-- Arquivos na pasta `docs/` commitados
+- ✅ Repositório GitHub criado
+- ✅ Arquivos na pasta `docs/` commitados
+- ✅ **GitHub Pages habilitado manualmente (OBRIGATÓRIO)**
 
 ## ⚙️ Configuração no GitHub
 
@@ -69,14 +89,38 @@ Este erro geralmente ocorre quando:
    - Branch: "main"
    - Folder: "/ docs"
 
-## 📁 Arquivos de Workflow Disponíveis
+## 📁 Workflows Disponíveis (Por Ordem de Recomendação)
 
-Criamos múltiplos workflows para garantir que um funcione:
+### ✅ **RECOMENDADO: Configuração Manual**
+1. **Configure manualmente primeiro**: Settings > Pages > Deploy from branch > main > /docs
+2. **Depois use qualquer workflow** ou deixe funcionando automaticamente
 
-- **`simple.yml`** - Workflow mais simples (RECOMENDADO)
-- **`alternative.yml`** - Sem usar configure-pages
-- **`pages.yml`** - Workflow padrão com enablement=true
-- **`static.yml`** - Workflow estático com enablement=true
+### 🔄 **Workflows Automáticos** (após configuração manual)
+1. **`gh-pages.yml`** - Usa peaceiris/actions-gh-pages (NOVO - mais confiável)
+2. **`simple.yml`** - Workflow mais simples
+3. **`alternative.yml`** - Sem usar configure-pages
+4. **`pages.yml`** - Workflow padrão com enablement=true
+5. **`static.yml`** - Workflow estático com enablement=true
+
+## 🎯 **Estratégia Recomendada:**
+
+### PASSO 1: Configuração Manual (OBRIGATÓRIO)
+```
+1. Vá para Settings > Pages
+2. Source: "Deploy from a branch"
+3. Branch: "main"
+4. Folder: "/ docs"
+5. Save
+```
+
+### PASSO 2: Teste o Site
+- Aguarde 2-5 minutos
+- Acesse: https://augustoarand.github.io/project-ods03-uj/
+- Se funcionar, você já tem o site rodando!
+
+### PASSO 3: Workflows Automáticos (Opcional)
+- Se quiser deploy automático, teste o `gh-pages.yml`
+- Ele criará uma branch `gh-pages` automaticamente
 
 ## 🔄 Comandos Git para Atualizar
 
