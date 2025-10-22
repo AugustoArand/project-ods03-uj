@@ -9,28 +9,78 @@ Este guia explica como configurar o GitHub Pages para hospedar a página estáti
 
 ## ⚙️ Configuração no GitHub
 
-### 1. Acesse as Configurações do Repositório
+### PASSO 1: Habilitar GitHub Pages
 1. Vá para o seu repositório no GitHub
 2. Clique em **Settings** (Configurações)
 3. Role para baixo até encontrar **Pages** no menu lateral
+4. Em **Source** (Fonte), selecione **GitHub Actions**
+5. Clique em **Save** (Salvar)
 
-### 2. Configure o GitHub Pages
-1. Em **Source** (Fonte), selecione **Deploy from a branch**
-2. Em **Branch**, selecione **main**
-3. Em **Folder**, selecione **/ docs**
-4. Clique em **Save** (Salvar)
-
-### 3. Configure as Permissões (Importante!)
+### PASSO 2: Configurar Permissões (MUITO IMPORTANTE!)
 1. Ainda em **Settings**, vá para **Actions** > **General**
 2. Em **Workflow permissions**, selecione:
    - ✅ **Read and write permissions**
    - ✅ **Allow GitHub Actions to create and approve pull requests**
 3. Clique em **Save**
 
-### 4. Execute o Workflow
+### PASSO 3: Configurar o Environment
+1. Em **Settings**, vá para **Environments**
+2. Clique em **New environment**
+3. Nome: `github-pages`
+4. Em **Deployment branches**, selecione **Selected branches**
+5. Adicione a regra para `main`
+6. Clique em **Save protection rules**
+
+### PASSO 4: Verificar o Workflow
 1. Vá para a aba **Actions** do seu repositório
-2. Você verá o workflow **Deploy to GitHub Pages**
-3. Se não executou automaticamente, clique em **Run workflow**
+2. Você deve ver os workflows disponíveis
+3. Execute manualmente clicando em **Run workflow** se necessário
+
+## 🌐 Acessando o Site
+
+Após alguns minutos, seu site estará disponível em:
+```
+https://augustoarand.github.io/project-ods03-uj/
+```
+
+## 🐛 Solução de Problemas
+
+### Erro "Get Pages site failed"
+Este erro geralmente ocorre quando:
+
+1. **Pages não está habilitado**: 
+   - Vá em Settings > Pages
+   - Selecione "GitHub Actions" como fonte
+
+2. **Permissões insuficientes**:
+   - Settings > Actions > General
+   - Marque "Read and write permissions"
+
+3. **Environment não configurado**:
+   - Settings > Environments
+   - Crie o environment "github-pages"
+
+### Se ainda não funcionar:
+1. Delete os arquivos `.github/workflows/pages.yml`
+2. Use apenas o `static.yml`
+3. Ou configure manualmente:
+   - Settings > Pages
+   - Source: "Deploy from a branch"
+   - Branch: "main"
+   - Folder: "/ docs"
+
+## 📁 Arquivos de Workflow Disponíveis
+
+- `pages.yml` - Workflow padrão com build e deploy separados
+- `static.yml` - Workflow simplificado (recomendado se houver problemas)
+
+## 🔄 Comandos Git para Atualizar
+
+```bash
+git add .
+git commit -m "Fix GitHub Pages configuration"
+git push origin main
+```
 
 ## 🌐 Acessando o Site
 
